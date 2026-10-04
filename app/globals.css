@@ -122,9 +122,142 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    /* 파스텔 그라데이션 배경: 스크롤과 무관하게 고정되어 글래스 표면에 은은하게 비침 */
+    background-color: var(--background);
+    background-image:
+      radial-gradient(60rem 36rem at 8% -12%, oklch(0.92 0.06 280 / 0.85), transparent 62%),
+      radial-gradient(52rem 32rem at 92% -4%, oklch(0.93 0.06 340 / 0.8), transparent 60%),
+      radial-gradient(48rem 34rem at 78% 58%, oklch(0.93 0.05 200 / 0.7), transparent 62%),
+      radial-gradient(46rem 32rem at 14% 86%, oklch(0.94 0.05 150 / 0.7), transparent 62%);
+    background-attachment: fixed;
+  }
+  .dark body {
+    background-image:
+      radial-gradient(60rem 36rem at 8% -12%, oklch(0.42 0.1 280 / 0.5), transparent 62%),
+      radial-gradient(52rem 32rem at 92% -4%, oklch(0.42 0.1 330 / 0.45), transparent 60%),
+      radial-gradient(48rem 34rem at 78% 58%, oklch(0.42 0.08 210 / 0.4), transparent 62%),
+      radial-gradient(46rem 32rem at 14% 86%, oklch(0.42 0.07 160 / 0.4), transparent 62%);
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* ---------------------------------------------------------------
+   글래스모피즘 디자인 시스템 (Apple / iOS 스타일)
+   --------------------------------------------------------------- */
+@layer components {
+  .glass {
+    background: color-mix(in oklab, white 55%, transparent);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid color-mix(in oklab, white 70%, transparent);
+    box-shadow:
+      0 8px 32px oklch(0.4 0.05 280 / 0.1),
+      inset 0 1px 0 color-mix(in oklab, white 70%, transparent);
+  }
+
+  .dark .glass {
+    background: color-mix(in oklab, white 7%, transparent);
+    border-color: color-mix(in oklab, white 12%, transparent);
+    box-shadow:
+      0 8px 32px oklch(0 0 0 / 0.4),
+      inset 0 1px 0 color-mix(in oklab, white 10%, transparent);
+  }
+
+  /* 카드처럼 떠 있는 표면: hover 시 살짝 떠오르는 iOS 특유의 반응 */
+  .glass-card {
+    transition:
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      background 0.4s ease;
+  }
+
+  .glass-card:hover {
+    transform: translateY(-4px);
+    background: color-mix(in oklab, white 68%, transparent);
+    box-shadow:
+      0 16px 48px oklch(0.4 0.05 280 / 0.16),
+      inset 0 1px 0 color-mix(in oklab, white 80%, transparent);
+  }
+
+  .dark .glass-card:hover {
+    background: color-mix(in oklab, white 11%, transparent);
+    box-shadow:
+      0 16px 48px oklch(0 0 0 / 0.5),
+      inset 0 1px 0 color-mix(in oklab, white 14%, transparent);
+  }
+
+  /* 히어로 내부를 떠다니는 글래스 구체 */
+  .glass-orb {
+    border-radius: 9999px;
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    border: 1px solid color-mix(in oklab, white 55%, transparent);
+    box-shadow:
+      inset 0 2px 12px color-mix(in oklab, white 70%, transparent),
+      0 12px 40px oklch(0.4 0.05 280 / 0.14);
+  }
+
+  .dark .glass-orb {
+    border-color: color-mix(in oklab, white 14%, transparent);
+    box-shadow:
+      inset 0 2px 12px color-mix(in oklab, white 12%, transparent),
+      0 12px 40px oklch(0 0 0 / 0.4);
+  }
+}
+
+/* 히어로 구체의 궤도 이동: 영역 밖으로 나가지 않도록 이동 폭을 제한 */
+@keyframes orb-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(36px, 26px) scale(1.06);
+  }
+  66% {
+    transform: translate(-22px, 38px) scale(0.96);
+  }
+}
+
+@keyframes orb-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  40% {
+    transform: translate(-40px, 24px) scale(1.08);
+  }
+  75% {
+    transform: translate(26px, -20px) scale(0.95);
+  }
+}
+
+@keyframes orb-drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(30px, -32px) scale(1.1);
+  }
+}
+
+@keyframes caret-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-orb {
+    animation: none !important;
   }
 }
